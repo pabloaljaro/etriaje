@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>polls</title>
+    <style>
+        .robot_response{
+            text-align: left;
+        }
+
+        .user_response{
+            text-align: right;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+
+<div class="cabecera">
+    
+    <fieldset id="conversation_field">
+        <div class="robot_response">{{bienvenida}}</div><br>
+
+    </fieldset>
+    <input id="txt_user" name="txt_user" type="text" placeholder="Escribe aquí"/>
+    <input id="txt_context" type="hidden" name="context" value="{{context}}"/>
+    <input type="hidden" name="" value=""/>
+    <input type="hidden" name="" value=""/>
+    <input type="hidden" name="" value=""/>
+    <input type="hidden" name="" value=""/>
+    
+</div>
+<script type="text/javascript">
+    
+    var element = document.getElementById("txt_user");
+    element.addEventListener('keypress', function (e) {
+        var key = e.which || e.keyCode;
+        if (key === 13) { // 13 is enter
+          enviar();
+        }
+    });
+
+    function enviar(){
+        var texto = element.value;
+        var context = document.getElementById("txt_context").value;
+        var node = document.createElement("div");
+        node.setAttribute("class","user_response");
+        node.appendChild(document.createTextNode(texto));
+        var area_conversacion = document.getElementById("conversation_field");
+        area_conversacion.appendChild(node);
+        
+        var nuevoNodo = document.createElement("div");
+        nuevoNodo.setAttribute("class","robot_response");
+        
+        //AJAX Request -------------------------------------------------------------
+        var http = new XMLHttpRequest();
+        var url = 'http://localhost:5000/interlocutor/';
+        var params = 'user_talk=' + texto + '&context=' + context;
+        http.open('POST', url, true);
+
+        
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        http.onreadystatechange = function() {
+            if(http.readyState == 4 && http.status == 200) {
+                var cadena = JSON.parse(http.responseText);
+                var respuesta = cadena.respuesta_bot;
+                console.log(respuesta);
+                var contexto = JSON.stringify(cadena.contexto_bot).replace(/["']/g, "'").replace("true","'true'").replace("false","'false'");
+                console.log(contexto);
+                nuevoNodo.appendChild(document.createTextNode(respuesta));
+                document.getElementById("txt_context").value = contexto;        
+                
+            }else{
+                //nuevoNodo.appendChild(document.createTextNode("Algo ha ido mal en la petición."));
+                
+            }
+        }
+        
+        http.send(params);
+
+        //END AJAX REQUEST ---------------------------------------------------------
+        area_conversacion.appendChild(nuevoNodo);
+
+        element.value = "";
+    }
+
+</script>
+</body>
+
+</html>
+
+
