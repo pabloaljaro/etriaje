@@ -83,7 +83,6 @@ def interlocutor():
 		).get_result()
 
 		saludo = json.dumps(response, indent=2)
-		
 
 		respuesta['respuesta_bot'] = response['output']['generic'][0]['text']
 		respuesta['contexto_bot'] = response['context']
