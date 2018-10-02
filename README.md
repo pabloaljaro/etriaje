@@ -2,7 +2,9 @@
 
 Una suit médica al alcance de tu mano.
 
-Uso:
+Get started:
+Run on cmd (root project directory): python etriaje.py
 
-Para doctor:
-Ir a localhost:5000/doctor en un navegador
+For doctor:
+Local = Go to localhost:8000/doctor in a browser
+IBM Cloud = Go to https://etriaje.eu-gb.mybluemix.net/doctor

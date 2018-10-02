@@ -54,7 +54,10 @@
         
         //AJAX Request -------------------------------------------------------------
         var http = new XMLHttpRequest();
-        var url = 'http://localhost:5000/interlocutor/';
+        //Ejecución local
+        var url = 'http://localhost:8000/interlocutor/';
+        //Ejecución en IBM Cloud
+        //var url = 'https://etriaje.eu-gb.mybluemix.net/interlocutor/';
         var params = 'user_talk=' + texto + '&context=' + context;
         http.open('POST', url, true);
 
