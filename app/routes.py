@@ -87,22 +87,3 @@ def prueba():
     ibm_db.close(conn)
 
     return output
-
-
-
-def results(command):
-    from ibm_db import fetch_assoc
-
-    ret = []
-    result = fetch_assoc(command)
-    while result:
-        # This builds a list in memory. Theoretically, if there's a lot of rows,
-        # we could run out of memory. In practice, I've never had that happen.
-        # If it's ever a problem, you could use
-        #     yield result
-        # Then this function would become a generator. You lose the ability to access
-        # results by index or slice them or whatever, but you retain
-        # the ability to iterate on them.
-        ret.append(result)
-        result = fetch_assoc(command)
-    return ret  # Ditch this line if you choose to use a generator.
