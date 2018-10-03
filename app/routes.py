@@ -3,34 +3,15 @@ from app import app
 from app.forms import LoginForm
 import json
 import watson_developer_cloud
+import ibm_db
+from ibm_db import fetch_assoc, tables, exec_immediate
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'username': 'Miguel'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
     return render_template('index.html', title='Home')
 
-
-"""@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        flash('Login requested for user {}, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
-        return redirect(url_for('index'))
-    return render_template('login.html',  title='Sign In', form=form)"""
-	
 
 @app.route('/doctor', methods=['GET', 'POST'])
 def doctor():
@@ -58,6 +39,7 @@ def doctor():
 
 @app.route('/interlocutor/', methods=['POST'])
 def interlocutor():
+
 	respuesta = {}
     
 	if request.method == 'POST':
@@ -89,3 +71,38 @@ def interlocutor():
 	
 	#return Response(respuesta)
 	return jsonify(respuesta)
+
+@app.route('/prueba', methods=['GET', 'POST'])
+def prueba():
+    conn = ibm_db.connect("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=jnw52971;PWD=ft0d3qpf+q1whs7n;", "", "")
+    sql = 'SELECT * FROM JNW52971.USUARIO'
+    stmt = ibm_db.exec_immediate(conn, sql)
+    dictionary = ibm_db.fetch_both(stmt)
+    output = ""
+    while dictionary != False:
+        output += str(dictionary['ID_USER']) + " - " + str(dictionary['NOMBRE_USUARIO']) + "<br>"
+        dictionary = ibm_db.fetch_both(stmt)
+    
+    #Cerramos conexión con bbdd
+    ibm_db.close(conn)
+
+    return output
+
+
+
+def results(command):
+    from ibm_db import fetch_assoc
+
+    ret = []
+    result = fetch_assoc(command)
+    while result:
+        # This builds a list in memory. Theoretically, if there's a lot of rows,
+        # we could run out of memory. In practice, I've never had that happen.
+        # If it's ever a problem, you could use
+        #     yield result
+        # Then this function would become a generator. You lose the ability to access
+        # results by index or slice them or whatever, but you retain
+        # the ability to iterate on them.
+        ret.append(result)
+        result = fetch_assoc(command)
+    return ret  # Ditch this line if you choose to use a generator.
