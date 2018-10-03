@@ -4,3 +4,4 @@ watson-developer-cloud==2.1.0
 Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
 Flask-Migrate==2.2.1
+ibm_db==2.0.9
