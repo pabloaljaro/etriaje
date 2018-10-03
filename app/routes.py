@@ -74,6 +74,7 @@ def interlocutor():
 
 @app.route('/prueba', methods=['GET', 'POST'])
 def prueba():
+    # Documentacion python - bbdd en https://www.ibm.com/support/knowledgecenter/es/SSEPGG_9.5.0/com.ibm.db2.luw.apdv.python.doc/doc/t0054388.html
     conn = ibm_db.connect("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=jnw52971;PWD=ft0d3qpf+q1whs7n;", "", "")
     sql = 'SELECT * FROM JNW52971.USUARIO'
     stmt = ibm_db.exec_immediate(conn, sql)
