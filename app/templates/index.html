@@ -1,9 +1,96 @@
-<html>
-<head>
-	<title>Cuadro principal</title>
-</head>
-<body>
-Panel principal<br><br>
-<a onclick="window.open('/doctor', 'Doctor - eTriaje', 'height=800,width=600');" style="cursor:pointer"><b>Doctor</b></a>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cuadro principal - eTriaje</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{{ url_for('static', filename='dist/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+	<link href="{{ url_for('static', filename='stylesheets/css/grayscale.min.css') }}" rel="stylesheet">
+
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top"><img src="{{ url_for('static', filename='images/logo.png') }}" style="max-height:40px;">eTriaje - Doctor Online</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="masthead">
+      <div class="container d-flex h-100 align-items-center">
+        <div class="mx-auto text-center">
+          <h1 class="mx-auto my-0 text-uppercase">eTRIAJE</h1>
+          <h2 class="text-white-50 mx-auto mt-2 mb-5">Tu doctor online. Pasa por cada uno de los módulos para obtener un mejor diagnóstico.</h2>
+		  <a  class="btn btn-secondary js-scroll-trigger" style="margin-right:10px; color:white !important;" onclick="abrirPop('doctor?cat=st',0);">síntomas</a>
+		  <a  class="btn btn-secondary js-scroll-trigger" style="margin-right:10px; color:white !important;" onclick="abrirPop('doctor?cat=an',1);">análisis</a>
+		  <a  class="btn btn-secondary js-scroll-trigger" style="margin-right:10px; color:white !important;">dermis</a>
+		  <a  class="btn btn-secondary js-scroll-trigger" style="margin-right:10px; color:white !important;">facial</a>
+		  <br>
+		  <a  class="btn btn-success js-scroll-trigger" style="margin-top:40px;  color:white !important;">Ejecutar diagnóstico</a>
+		</div>
+      </div>
+    </header>
+
+    <!-- Footer -->
+    <footer class="bg-black small text-center text-white-50">
+      <div class="container">
+        Copyright &copy; Roboto Team 2018
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ url_for('static', filename='dist/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dist/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="{{ url_for('static', filename='dist/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{{ url_for('static', filename='dist/js/grayscale.min.js') }}"></script>
+	<script type="text/javascript">
+
+		function abrirPop(url, cat) {
+			if(cat == 0) title = 'Síntomas';
+			else title = 'Análisis';
+			// Fixes dual-screen position                         Most browsers      Firefox
+			var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+			var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+			var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+			var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+			var left = ((width / 2) - (420 / 2)) + dualScreenLeft;
+			var top = ((height / 2) - (700 / 2)) + dualScreenTop;
+			var newWindow = window.open('/'+url, 'Doctor - eTriaje - ' + title, 'scrollbars=yes, width=420, height=700, top=' + top + ', left=' + left);
+
+			// Puts focus on the newWindow
+			if (window.focus) {
+				newWindow.focus();
+			}
+		}
+	</script>
+  </body>
+
 </html>

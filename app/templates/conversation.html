@@ -1,13 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Doctor - eTriaje</title>
+	<title>Doctor - eTriaje - {{titulo}}</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/jquery.convform.css') }}" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/demo.css') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+    <style>
+        ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: #cecbcb;
+            
+        }
+
+        :-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: #cecbcb;
+        }
+
+        ::-ms-input-placeholder { /* Microsoft Edge */
+            color: #cecbcb;
+        }
+    </style>
+
 </head>
 <body>
         <section id="demo">
@@ -15,21 +33,24 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-6 col-sm-offset-3 col-xs-offset-0">
+                                    <p style="text-align:center;"><img style="max-height: 70px;margin-bottom: -15px;" src="{{ url_for('static', filename='images/doctor.png') }}"></p>
+                                    <p style="font-family:Roboto; font-size: 23px;font-weight: bold;text-align: center; color:#bdb7b7; letter-spacing: 1px;">{{titulo}}</p>
                                 <div class="card no-border">
                                         <div id="chat" class="conv-form-wrapper" id="conversation_field">
                                                 
                                         <div class="wrapper-messages">
-                                                <div class="spinLoader   hidden"></div>
+                                                <div id="loader_gif" class="spinLoader hidden" style="z-index:99;"></div>
                                                 <div id="messages" style="padding-bottom: 46px;" nm="conversation_field">
                                                     <div class="message to ready">{{bienvenida}}</div>
                                                     <input id="txt_context" type="hidden" name="context" value="{{context}}"/>
+                                                    <input id="txt_cat" type="hidden" name="cat" value="{{categoria}}"/>
                                                 </div>
                                         </div>
                                         <form class="convFormDynamic" onsubmit="return false;">
                                             <div class="options dragscroll">
                                                 <div class="option" onclick="cerrar();">FINALIZAR</div>
                                             </div>
-                                            <input type="text" id="txt_user" rows="1" placeholder="Escribe aquí y presiona Enter para enviar" class="userInputDynamic" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"/>
+                                            <input type="text" id="txt_user" rows="1" placeholder="Escribe aquí (Enter para enviar)" class="userInputDynamic" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"/>
                                             <button class="submit" id="btn_enviar" disabled>▶</button>
                                             <span class="clear"></span>
                                         </form>
@@ -42,7 +63,7 @@
             </section>
 	<script type="text/javascript" src="{{ url_for('static', filename='dist/jquery-1.12.3.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='dist/autosize.min.js') }}"></script>
-	<!--<script type="text/javascript" src="{{ url_for('static', filename='dist/jquery.convform.js') }}"></script>-->
+	<script type="text/javascript" src="{{ url_for('static', filename='dist/jquery.convform.js') }}"></script>
 
     <script type="text/javascript">
     
@@ -62,22 +83,27 @@
         function enviar(){
             var texto = element.value;
             var context = document.getElementById("txt_context").value;
+            var categoria = document.getElementById("txt_cat").value;
             var node = document.createElement("div");
             node.setAttribute("class","message from");
             node.appendChild(document.createTextNode(texto));
             var area_conversacion = document.querySelectorAll("[nm='conversation_field']")[0];
             area_conversacion.appendChild(node);
             
+            //scroll and loader
+            loader(true);
+            updateScroll();
+
             var nuevoNodo = document.createElement("div");
             nuevoNodo.setAttribute("class","message to ready");
             
             //AJAX Request -------------------------------------------------------------
             var http = new XMLHttpRequest();
             //Ejecución local
-            var url = 'http://localhost:8000/interlocutor/';
+            var url = '/interlocutor/';
             //Ejecución en IBM Cloud
             //var url = 'https://etriaje.eu-gb.mybluemix.net/interlocutor/';
-            var params = 'user_talk=' + texto + '&context=' + context;
+            var params = 'user_talk=' + texto + '&context=' + context + '&cat=' + categoria;
             http.open('POST', url, true);
     
             
@@ -91,8 +117,9 @@
                     var contexto = JSON.stringify(cadena.contexto_bot).replace(/["']/g, "'").replace("true","'true'").replace("false","'false'");
  
                     nuevoNodo.appendChild(document.createTextNode(respuesta));
-                    document.getElementById("txt_context").value = contexto;        
-                    
+                    document.getElementById("txt_context").value = contexto;
+                    updateScroll();        
+                    loader(false);
                 }else{
                     //nuevoNodo.appendChild(document.createTextNode("Algo ha ido mal en la petición."));
                     
@@ -108,111 +135,29 @@
         }
 
         function cerrar(){
+            //save into a ddbb
             if(confirm("¿Realmente deseas terminar?")){
                 close();
             }
-            //save and close
+            
         }
+
+        function updateScroll(){
+            var element = document.getElementById("messages");
+            element.scrollTop = element.scrollHeight;
+        }
+        
+        function loader(mostrar){
+            if(mostrar){
+                document.getElementById("loader_gif").className = "spinLoader";
+            }else{
+                document.getElementById("loader_gif").className = "spinLoader hidden";
+            }
+        }
+
     
     </script>
 </body>
 </html>
 
-
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Etriaje</title>
-    <style>
-        .robot_response{
-            text-align: left;
-        }
-
-        .user_response{
-            text-align: right;
-        }
-    </style>
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-</head>
-
-<body>
-
-<div class="cabecera">
-    
-    <fieldset id="conversation_field">
-        <div class="robot_response">{{bienvenida}}</div><br>
-
-    </fieldset>
-    <input id="txt_user" name="txt_user" type="text" placeholder="Escribe aquí"/>
-    <input id="txt_context" type="hidden" name="context" value="{{context}}"/>
-    <input type="hidden" name="" value=""/>
-    <input type="hidden" name="" value=""/>
-    <input type="hidden" name="" value=""/>
-    <input type="hidden" name="" value=""/>
-    
-</div>
-<script type="text/javascript">
-    
-    var element = document.getElementById("txt_user");
-    element.addEventListener('keypress', function (e) {
-        var key = e.which || e.keyCode;
-        if (key === 13) { // 13 is enter
-          enviar();
-        }
-    });
-
-    function enviar(){
-        var texto = element.value;
-        var context = document.getElementById("txt_context").value;
-        var node = document.createElement("div");
-        node.setAttribute("class","user_response");
-        node.appendChild(document.createTextNode(texto));
-        var area_conversacion = document.getElementById("conversation_field");
-        area_conversacion.appendChild(node);
-        
-        var nuevoNodo = document.createElement("div");
-        nuevoNodo.setAttribute("class","robot_response");
-        
-        //AJAX Request -------------------------------------------------------------
-        var http = new XMLHttpRequest();
-        //Ejecución local
-        var url = 'http://localhost:8000/interlocutor/';
-        //Ejecución en IBM Cloud
-        //var url = 'https://etriaje.eu-gb.mybluemix.net/interlocutor/';
-        var params = 'user_talk=' + texto + '&context=' + context;
-        http.open('POST', url, true);
-
-        
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-        http.onreadystatechange = function() {
-            if(http.readyState == 4 && http.status == 200) {
-                var cadena = JSON.parse(http.responseText);
-                var respuesta = cadena.respuesta_bot;
-                console.log(respuesta);
-                var contexto = JSON.stringify(cadena.contexto_bot).replace(/["']/g, "'").replace("true","'true'").replace("false","'false'");
-                console.log(contexto);
-                nuevoNodo.appendChild(document.createTextNode(respuesta));
-                document.getElementById("txt_context").value = contexto;        
-                
-            }else{
-                //nuevoNodo.appendChild(document.createTextNode("Algo ha ido mal en la petición."));
-                
-            }
-        }
-        
-        http.send(params);
-
-        //END AJAX REQUEST ---------------------------------------------------------
-        area_conversacion.appendChild(nuevoNodo);
-
-        element.value = "";
-    }
-
-</script>
-</body>
-
-</html>
--->
 
