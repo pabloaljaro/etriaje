@@ -5,7 +5,7 @@ from app.forms import LoginForm
 import json
 import ibm_db
 from ibm_db import fetch_assoc, tables, exec_immediate
-from app.functions import watsonConnection
+from app.functions import watsonConnection, insertarUsuarios
 
 
 @app.route('/')
@@ -43,30 +43,29 @@ def interlocutor():
         maincontext = request.form.get("context")
         categoria = request.form.get("cat")
         response = watsonConnection(user_talk, maincontext, categoria)
-
+    
     saludo = json.dumps(response, indent=2)
-
+    #print(saludo)
     respuesta['respuesta_bot'] = response['output']['generic'][0]['text']
+    #print(type(respuesta['respuesta_bot']))
+    aux = ''
+    if len(respuesta['respuesta_bot']) > 1:
+        for r in respuesta['respuesta_bot']:
+            aux += r
+        respuesta['respuesta_bot'] = aux
+
     respuesta['contexto_bot'] = response['context']
 
     # return Response(respuesta)
     return jsonify(respuesta)
 
 
-@app.route('/prueba', methods=['GET', 'POST'])
-def prueba():
-    # Documentacion python - bbdd en https://www.ibm.com/support/knowledgecenter/es/SSEPGG_9.5.0/com.ibm.db2.luw.apdv.python.doc/doc/t0054388.html
-    conn = ibm_db.connect(
-        "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=jnw52971;PWD=ft0d3qpf+q1whs7n;", "", "")
-    sql = 'SELECT * FROM JNW52971.USUARIO'
-    stmt = ibm_db.exec_immediate(conn, sql)
-    dictionary = ibm_db.fetch_both(stmt)
-    output = ""
-    while dictionary != False:
-        output += str(dictionary['ID_USER']) + " - " + \
-            str(dictionary['NOMBRE_USUARIO']) + "<br>"
-        dictionary = ibm_db.fetch_both(stmt)
-
-    ibm_db.close(conn)
-
-    return output
+@app.route('/iuser', methods=['GET', 'POST'])
+def iuser():
+    #insertar("")
+    result = ""
+    if request.method == 'POST':
+        tx_usuario = request.form.get("tx_usuario")
+        tx_password = request.form.get("tx_nombre")
+        result = insertarUsuarios(tx_usuario,tx_password)
+    return result

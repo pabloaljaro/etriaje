@@ -114,7 +114,7 @@
                     var cadena = JSON.parse(http.responseText);
                     var respuesta = cadena.respuesta_bot;
 
-                    var contexto = JSON.stringify(cadena.contexto_bot).replace(/["']/g, "'").replace("true","'true'").replace("false","'false'");
+                    var contexto = JSON.stringify(cadena.contexto_bot).replace(/["']/g, "'").replace(/'?true'?/i,"'true'").replace(/'?false'?/i,"'false'").replace(/'?null'?/i,"'null'");
  
                     nuevoNodo.appendChild(document.createTextNode(respuesta));
                     document.getElementById("txt_context").value = contexto;
