@@ -53,7 +53,7 @@ def insertarAnalisis(id_usuario,co_tipo_analisis,fe_fecha_analisis):
      # Documentacion python - bbdd en https://www.ibm.com/support/knowledgecenter/es/SSEPGG_9.5.0/com.ibm.db2.luw.apdv.python.doc/doc/t0054388.html
     conn = ibm_db.connect(
         "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-01.services.eu-gb.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=jnw52971;PWD=ft0d3qpf+q1whs7n;", "", "")
-    sql = "INSERT INTO JNW52971.T_ANALISIS(TX_USUARIO,TX_NOMBRE) VALUES('" + id_usuario +"','" + co_tipo_analisis +"','" + fe_fecha_analisis + "')"
+    sql = "INSERT INTO JNW52971.T_ANALISIS(ID_USUARIO,CO_TIPO_ANALISIS,FE_FECHA_ANALISIS) VALUES('" + id_usuario +"','" + co_tipo_analisis +"','" + fe_fecha_analisis + "')"
 
     stmt = ibm_db.exec_immediate(conn, sql)
 
@@ -63,3 +63,5 @@ def insertarAnalisis(id_usuario,co_tipo_analisis,fe_fecha_analisis):
         return "ok"
     else:
         return "error"   
+def updateAnalisis(id_usuario,co_tipo_analisis,fe_fecha_analisis):
+	return "ok"

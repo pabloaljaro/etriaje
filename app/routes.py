@@ -5,13 +5,17 @@ from app.forms import LoginForm
 import json
 import ibm_db
 from ibm_db import fetch_assoc, tables, exec_immediate
-from app.functions import watsonConnection, insertarUsuarios
+from app.functions import watsonConnection, insertarUsuarios, insertarAnalisis, updateAnalisis
 
 
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html', title='Home')
+    
+@app.route('/login')
+def login():
+    return render_template('login.html', title='Login')
 
 
 @app.route('/doctor', methods=['GET', 'POST'])
@@ -62,10 +66,19 @@ def interlocutor():
 
 @app.route('/iuser', methods=['GET', 'POST'])
 def iuser():
-    #insertar("")
     result = ""
     if request.method == 'POST':
         tx_usuario = request.form.get("tx_usuario")
         tx_password = request.form.get("tx_nombre")
         result = insertarUsuarios(tx_usuario,tx_password)
+    return result
+
+@app.route('/ianalisis', methods=['GET', 'POST'])
+def ianalisis():
+    result = ""
+    if request.method == 'POST':
+        user = request.form.get("ID_USUARIO")
+        tipoanalisis = request.form.get("CO_TIPO_ANALISIS")
+        fecha = request.form.get("FE_FECHA_ANALISIS")
+        result = insertarUsuarios(user,tipoanalisis,fecha)
     return result
